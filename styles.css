@@ -63,3 +63,35 @@ th {
 .resize-handle:hover {
     background-color: #a7d9ff; /* Light blue on hover */
 }
+
+/* Tooltip styles */
+.tooltip {
+    position: absolute;
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    padding: 8px 12px;
+    border-radius: 6px;
+    z-index: 100; /* Ensure tooltip is on top */
+    opacity: 0;
+    transition: opacity 0.3s;
+    max-width: 300px; /* Max width for the tooltip */
+    word-wrap: break-word; /* Wrap long words */
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.25rem; /* 20px */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.tooltip.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Class to truncate tooltip text if it's very long */
+.tooltip-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block; /* Required for text-overflow to work */
+}

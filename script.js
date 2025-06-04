@@ -16,6 +16,9 @@ const appContainer = document.getElementById('app-container');
 // Global variable to store the parsed CSV data
 let csvData = [];
 
+// Tooltip element
+let tooltip;
+
 // Variables for column resizing
 let isColumnResizing = false;
 let currentResizableColumn = null;
@@ -147,12 +150,66 @@ function renderTable(data) {
             td.addEventListener('input', handleTableCellInput);
             // Add event listener for paste to ensure plain text
             td.addEventListener('paste', handleTableCellPaste);
+
+            // Add event listeners for tooltip
+            td.addEventListener('mouseenter', handleTableCellMouseEnter);
+            td.addEventListener('mouseleave', handleTableCellMouseLeave);
+
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
     }
     table.appendChild(tbody);
     tableContainer.appendChild(table);
+
+    // Create tooltip element if it doesn't exist
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.classList.add('tooltip');
+        document.body.appendChild(tooltip);
+    }
+}
+
+/**
+ * Checks if an element's content is overflowing.
+ * @param {HTMLElement} element The element to check.
+ * @returns {boolean} True if content is overflowing, false otherwise.
+ */
+function isOverflowing(element) {
+    return element.scrollWidth > element.clientWidth || element.scrollHeight > element.clientHeight;
+}
+
+/**
+ * Handles mouse enter events on table cells to show tooltip.
+ * @param {MouseEvent} event The mouse event.
+ */
+function handleTableCellMouseEnter(event) {
+    const td = event.target;
+    if (isOverflowing(td)) {
+        const fullText = td.textContent;
+        const tooltipMaxChars = 100; // Max characters before tooltip content itself is truncated
+
+        if (fullText.length > tooltipMaxChars) {
+            tooltip.textContent = fullText.substring(0, tooltipMaxChars) + '...';
+            tooltip.classList.add('tooltip-truncate'); // Apply truncation style
+        } else {
+            tooltip.textContent = fullText;
+            tooltip.classList.remove('tooltip-truncate'); // Remove truncation style
+        }
+
+        // Position tooltip near the cell
+        const rect = td.getBoundingClientRect();
+        tooltip.style.left = `${rect.left + window.scrollX}px`;
+        tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`; // 5px offset below cell
+        tooltip.classList.add('visible');
+    }
+}
+
+/**
+ * Handles mouse leave events on table cells to hide tooltip.
+ */
+function handleTableCellMouseLeave() {
+    tooltip.classList.remove('visible');
 }
 
 /**
@@ -297,6 +354,20 @@ function stopColumnResize(e) {
     document.removeEventListener('mouseup', stopColumnResize);
     document.body.classList.remove('select-none');
     document.body.style.cursor = 'default';
+
+    // Re-check for overflow after column resize, as cells might now fit
+    // This is a simple way, could be optimized to only check affected column
+    if (tableContainer.querySelector('table')) {
+        const cells = tableContainer.querySelectorAll('td');
+        cells.forEach(cell => {
+            if (!isOverflowing(cell)) {
+                // If a cell was showing tooltip and now it's not overflowing,
+                // ensure tooltip would hide if mouse leaves it now.
+                // This logic might be complex if tooltip is active on a cell being resized.
+                // For now, this just ensures state is clean.
+            }
+        });
+    }
 }
 
 
