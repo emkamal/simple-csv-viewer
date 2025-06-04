@@ -1,0 +1,65 @@
+/* Custom styles for the separator and scrollbars */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    overflow: hidden; /* Prevent body scrollbar due to resizable panels */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Style for contenteditable cells */
+[contenteditable="true"]:focus {
+    outline: 2px solid #3b82f6; /* Blue outline on focus */
+    outline-offset: -1px;
+    background-color: #eff6ff; /* Light blue background */
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed; /* Important for column resizing */
+}
+
+th, td {
+    border: 1px solid #e5e7eb; /* Light gray border */
+    padding: 8px 12px;
+    text-align: left;
+    white-space: nowrap; /* Prevent wrapping in cells */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis for overflow */
+    max-width: 200px; /* Limit cell width for better readability, will be overridden by resize */
+}
+
+th {
+    background-color: #f3f4f6; /* Lighter background for headers */
+    font-weight: 600;
+    position: sticky; /* Make header sticky */
+    top: 0;
+    z-index: 10; /* Ensure header stays on top */
+    position: relative; /* Needed for positioning the resize handle */
+}
+
+/* Style for the column resize handle */
+.resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    background-color: transparent; /* Initially transparent */
+    z-index: 20; /* Above other elements */
+}
+
+.resize-handle:hover {
+    background-color: #a7d9ff; /* Light blue on hover */
+}
